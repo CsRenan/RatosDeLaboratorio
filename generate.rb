@@ -7,11 +7,11 @@ def primeiro_conteudo_para(secao)
   primeiro_conteudo_secao = get_heading_for(todos_conteudo_secao.first)
 end
 
-def varios_conteudos_para(secao,quantidade=9)
+def varios_conteudos_para(secao)
   todos_conteudo_secao = Dir.glob("pages/#{secao}/*.html")
   todos_conteudo_secao.sort!{|x,y| File.ctime(x) <=> File.ctime(y)}
   todos_conteudo_secao.reverse!
-  todos_conteudo_secao[0...quantidade].map do |conteudo_secao|
+  todos_conteudo_secao.map do |conteudo_secao|
     get_heading_for(conteudo_secao)
   end
 end
@@ -47,9 +47,14 @@ end
 def generate_multiple_entries_secao(secao)
   puts "Generating #{secao}"
   template = ERB.new(File.read(get_secoes_mapping[secao]))
-  @content = varios_conteudos_para(secao)
-  result = template.result(binding)
-  File.open("#{secao}.html",'w'){|f| f.write(result)}
+  conteudos = varios_conteudos_para(secao)
+  conteudos.each_slice(9).each_with_index do |page_content,index|
+    @content = page_content
+    result = template.result(binding)
+    filename = "#{secao}#{index if index!=0}.html"
+    puts "Generating #{filename}"
+    File.open(filename,'w'){|f| f.write(result)}
+  end
 end
 
 puts "Generating index"
