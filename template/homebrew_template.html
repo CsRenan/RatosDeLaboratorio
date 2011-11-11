@@ -44,10 +44,8 @@
         </div>
       </div>
     </div>
-
     <div class="container">
-
-      <!-- Example row of columns -->
+      <!-- CONTENT --> 
       <% 3.times do %>
       <div class="row">
         <div class="span-one-third">
@@ -61,13 +59,23 @@
         </div>
       </div>
       <% end %>
-
+    <!-- END CONTENT -->
       <footer>
         <p><div id='licenca'><a rel="license" href="#licenca"><img alt="Licença Creative Commons" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" /> Click aqui para mais detalhes</a></div></p>
       </footer>
 
     </div> <!-- /container -->
-
+    <script>
+      if (typeof(current) == "undefined"){
+        var current=0;
+      }
+      $(window).scroll(function(){
+        if  ($(window).scrollTop() == $(document).height() - $(window).height()){
+          (++current);
+          $.get('homebrew'+current+'.html',function(data){ $(".row").last().after(data); } )
+        }
+      });
+    </script>
     <script src="application.js"></script>
   </body>
 </html>

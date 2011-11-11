@@ -33,6 +33,10 @@ def get_heading_for(file)
   File.open(file).read.slice(/<!-- HEADING -->.*<!-- END HEADING -->/m)
 end
 
+def get_contents_for(file)
+  File.open(file).read.slice(/<!-- CONTENT -->.*<!-- END CONTENT -->/m)
+end
+
 def content
   @content.shift || String.new
 end
@@ -46,12 +50,23 @@ end
 
 def generate_multiple_entries_secao(secao)
   puts "Generating #{secao}"
-  template = ERB.new(File.read(get_secoes_mapping[secao]))
+
+  front_page_template = ERB.new(File.read(get_secoes_mapping[secao]))
+  template_for_contents = ERB.new(get_contents_for(get_secoes_mapping[secao]))
+  
   conteudos = varios_conteudos_para(secao)
   conteudos.each_slice(9).each_with_index do |page_content,index|
+
+    if index == 0
+      index = String.new
+      current_template = front_page_template
+    else
+      current_template = template_for_contents
+    end
+
     @content = page_content
-    result = template.result(binding)
-    filename = "#{secao}#{index if index!=0}.html"
+    result = current_template.result(binding)
+    filename = "#{secao}#{index}.html"
     puts "Generating #{filename}"
     File.open(filename,'w'){|f| f.write(result)}
   end
