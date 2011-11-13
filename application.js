@@ -1,1 +1,1 @@
-$('$a[rel="license"]').click(function() {$.get('licenca.html', function(data) {  $(data).appendTo('#licenca').alert(); } );});
+$('$a[rel="license"]').click(function() {$.get('/licenca.html', function(data) {  $(data).appendTo('#licenca').alert(); } );});
